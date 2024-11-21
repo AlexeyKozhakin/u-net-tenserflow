@@ -74,7 +74,7 @@ model_unet = unet(CLASS_COUNT,
 model_unet.summary()
 
 # Определение путей для сохранения модели
-model_save_path = os.path.join("/content/drive/MyDrive/ColabNotebooks/MUSAC-UNET/data_training_hessingeim",
+model_save_path = os.path.join("./",
                                'model_exp_3_lr_0.0001.{epoch:02d}.keras')
 
 # Настройка колбеков

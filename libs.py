@@ -8,30 +8,39 @@ import os
 
 
 
-class_colors_hessinheim = {
-    0: (34, 139, 34),   # Low Vegetation - Низкая растительность
-    1: (128, 128, 128), # Impervious Surface - Непроницаемая поверхность
-    2: (255, 0, 0),     # Vehicle - Транспортное средство
-    3: (255, 165, 0),   # Urban Furniture - Городская мебель
-    4: (0, 0, 255),     # Roof - Крыша
-    5: (128, 0, 128),   # Façade - Фасад
-    6: (0, 255, 0),     # Shrub - Кустарник
-    7: (0, 100, 0),     # Tree - Дерево
-    8: (139, 69, 19),   # Soil/Gravel - Почва/Гравий
-    9: (64, 224, 208),  # Vertical Surface - Вертикальная поверхность
-    10: (255, 255, 0),  # Chimney - Дымоход
+# 20 - 1 (16) - 1 (17) - 1 (8) = 17 классов
+class_colors_stpls3d = {
+    0: (0, 0, 0),  # Ground - Черный
+    1: (128, 128, 128),  # Building - Зеленый           1==17
+    2: (255, 255, 0),  # LowVegetation - Желтый
+    3: (0, 0, 255),  # MediumVegetation - Синий
+    4: (255, 0, 0),  # HighVegetation - Красный
+    5: (0, 255, 255),  # Vehicle - Бирюзовый
+    6: (255, 0, 255),  # Truck - Магента
+    7: (255, 128, 0),  # Aircraft - Оранжевый
+    9: (255, 20, 147),  # Bike - Deep Pink
+    10: (255, 69, 0),  # Motorcycle - Красный Апельсин
+    11: (210, 180, 140),  # LightPole - Бежевый
+    12: (255, 105, 180),  # StreetSign - Hot Pink
+    13: (165, 42, 42),  # Clutter - Коричневый
+    14: (139, 69, 19),  # Fence - Темно-коричневый
+    15: (128, 0, 128),  # Road - Фиолетовый
+    18: (222, 184, 135),  # Dirt - Седой
+    19: (127, 255, 0),  # Grass - Ярко-зеленый
 }
 
-CLASS_LABELS = list(class_colors_hessinheim.values())
+CLASS_LABELS = list(class_colors_stpls3d.values())
 
 CLASS_COUNT = len(CLASS_LABELS)
 
 
-IMG_WIDTH = 128               # Ширина картинки
-IMG_HEIGHT = 128              # Высота картинки
-TRAIN_DIRECTORY = 'data/data_training_hessingeim/train'     # Название папки с файлами обучающей выборки
-VAL_DIRECTORY = 'data/data_training_hessingeim/val'         # Название папки с файлами проверочной выборки
-TEST_DIRECTORY = 'data/data_training_hessingeim/test'
+IMG_WIDTH = 512               # Ширина картинки
+IMG_HEIGHT = 512              # Высота картинки
+N_CHANNELS = 4
+DATA_DIR = '/mnt/working-ssd/alexey_kozhakin/MUSAC/data/STPLS3D/data_training_64_512'
+TRAIN_DIRECTORY = os.path.join(DATA_DIR,'train')     # Название папки с файлами обучающей выборки
+VAL_DIRECTORY = os.path.join(DATA_DIR,'val')         # Название папки с файлами проверочной выборки
+TEST_DIRECTORY = os.path.join(DATA_DIR,'test')
 
 
 
