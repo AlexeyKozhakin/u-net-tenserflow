@@ -5,7 +5,16 @@ import numpy as np
 # Системные инструменты
 import time
 import os
+import json
 
+# Чтение конфигурации из JSON
+with open("config.json", "r") as f:
+    config = json.load(f)
+
+# Использование переменных
+DATA_DIR = config["DATA_DIR"]
+MODEL_DIR = config["MODEL_DIR"]
+MODEL_FILE = config["MODEL_FILE"]
 
 
 # 20 - 1 (16) - 1 (17) - 1 (8) = 17 классов
@@ -36,11 +45,12 @@ CLASS_COUNT = len(CLASS_LABELS)
 
 IMG_WIDTH = 512               # Ширина картинки
 IMG_HEIGHT = 512              # Высота картинки
-N_CHANNELS = 4
-DATA_DIR = '/mnt/working-ssd/alexey_kozhakin/MUSAC/data/STPLS3D/data_training_64_512'
+N_CHANNELS = 3
+
 TRAIN_DIRECTORY = os.path.join(DATA_DIR,'train')     # Название папки с файлами обучающей выборки
 VAL_DIRECTORY = os.path.join(DATA_DIR,'val')         # Название папки с файлами проверочной выборки
 TEST_DIRECTORY = os.path.join(DATA_DIR,'test')
+PRED_DIRECTORY = os.path.join(DATA_DIR,'predict')
 
 
 
@@ -116,29 +126,32 @@ def labels_to_rgb(image_list  # список одноканальных изоб
 
     return np.array(result)
 
-
-# Функция визуализации процесса сегментации изображений
+# Функция визуализации процесса сегментации изображений и сохранения результатов
 def process_images_predict_save(model,        # обученная модель
-                        count = 1,    # количество случайных картинок для сегментации
-                        save_dir='predictions'  # директория для сохранения изображений
-                       ):
+                                x_pred,
+                                filenames,    # список файлов, по которым загружены изображения
+                                save_dir='predictions'  # директория для сохранения изображений
+                               ):
 
     # Создание директории, если её не существует
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
     # Генерация случайного списка индексов в количестве count между (0, len(x_val)
-    indexes = np.arange(count)
+    indexes = np.arange(len(filenames))
 
     # Вычисление предсказания сети для картинок с отобранными индексами
-    predict = np.argmax(model.predict(x_test[indexes]), axis=-1)
+    predict = np.argmax(model.predict(x_pred[indexes]), axis=-1)
 
     # Подготовка цветов классов для отрисовки предсказания
     orig = labels_to_rgb(predict[..., None])
-    fig, axs = plt.subplots(3, count, figsize=(25, 15))
 
-    # Отрисовка результата работы модели
-    for i in range(count):
-        # Сохранение предсказанного изображения в формате PNG
+
+    # Сохранение предсказанного изображения с использованием исходных имён файлов
+    for i, filename in enumerate(filenames):
+        # Сохранение предсказанного изображения в формате PNG под тем же именем
         pred_image = Image.fromarray(orig[i])
-        pred_image.save(os.path.join(save_dir, f'{indexes[i]}.png'))
+        base_filename = os.path.basename(filename)  # Извлечение имени файла без пути
+        pred_image.save(os.path.join(save_dir, base_filename))  # Сохранение под тем же именем
+
+    print(f"Предсказанные изображения сохранены в директории: {save_dir}")
