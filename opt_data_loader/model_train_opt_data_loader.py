@@ -49,13 +49,12 @@ early_stopping = EarlyStopping(monitor='val_loss', patience=10, verbose=1, mode=
 mcp_save = ModelCheckpoint(model_save_path, save_best_only=True, monitor='val_loss', mode='min')
 
 
-class_weights = {1: 2.0, 2:4.0, 3:10.0, 4:4.0, 5:10.0, 6:10.0, 7:10.0, 8:10.0, 9:10.0, 10:10.0,
-                 11:10.0, 12:10.0, 13:10.0, 14:10.0, 15:3.0, 16:1.0, 17:3.0}  # Пример весов для классов
+# class_weights = {1: 2.0, 2:4.0, 3:10.0, 4:4.0, 5:10.0, 6:10.0, 7:10.0, 8:10.0, 9:10.0, 10:10.0,
+#                  11:10.0, 12:10.0, 13:10.0, 14:10.0, 15:3.0, 16:1.0, 17:3.0}  # Пример весов для классов
 # Обучение модели
 history = model_unet.fit(
     train_dataset,
     epochs=50,
     validation_data=val_dataset,
-    callbacks=[early_stopping, mcp_save],
-    class_weight = class_weights
+    callbacks=[early_stopping, mcp_save]
 )
