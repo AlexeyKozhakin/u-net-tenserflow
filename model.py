@@ -11,6 +11,8 @@ from tensorflow.keras.metrics import Precision, Recall, OneHotIoU
 
 import tensorflow as tf
 
+# Регистрируем метрику
+@tf.keras.saving.register_keras_serializable()
 def class_accuracy(class_id):
     def accuracy(y_true, y_pred):
         y_true_class = tf.cast(tf.equal(y_true, class_id), tf.float32)  # Метки для конкретного класса
