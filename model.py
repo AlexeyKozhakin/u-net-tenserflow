@@ -7,9 +7,19 @@ from tensorflow.keras.layers import Input, Conv2DTranspose, concatenate, Activat
 # Оптимизатор Adam
 from tensorflow.keras.optimizers import Adam
 
-from tensorflow.keras.metrics import Precision,Recall,OneHotIoU
+from tensorflow.keras.metrics import Precision, Recall, OneHotIoU
 
-from libs import CLASS_COUNT
+import tensorflow as tf
+
+def class_accuracy(class_id):
+    def accuracy(y_true, y_pred):
+        y_true_class = tf.cast(tf.equal(y_true, class_id), tf.float32)  # Метки для конкретного класса
+        y_pred_class = tf.cast(tf.equal(tf.argmax(y_pred, axis=-1), class_id), tf.float32)  # Прогнозы для класса
+        correct_predictions = tf.reduce_sum(y_true_class * y_pred_class)  # Корректные предсказания
+        total_true = tf.reduce_sum(y_true_class)  # Общее количество истинных меток для класса
+        return correct_predictions / (total_true + tf.keras.backend.epsilon())  # Избегаем деления на 0
+    return accuracy
+
 
 def unet(class_count,   # количество классов
          input_shape    # форма входного изображения
@@ -118,17 +128,8 @@ def unet(class_count,   # количество классов
     model.compile(optimizer=Adam(learning_rate=1e-3),
                   #loss='binary_crossentropy',
                   loss='sparse_categorical_crossentropy',
-                  metrics=['accuracy'
-                          #OneHotIoU(num_classes=CLASS_COUNT,
-                          #          target_class_ids=list(range(CLASS_COUNT))),
-                          #Precision(class_id=0),
-                          #  Precision(class_id=1),
-                          #  Precision(class_id=2),
-                          #  Precision(class_id=3),
-                          #  Recall(class_id=0),
-                          #  Recall(class_id=1),
-                          #  Recall(class_id=2),
-                          #  Recall(class_id=3),
+                  metrics=['accuracy',
+                           class_accuracy(0),  # Точность для класса 0
                   ]
                   )
 

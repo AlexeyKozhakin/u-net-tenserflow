@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 token
+checkpoints
 venv_unet
 .idea
 config.json

@@ -1,8 +1,6 @@
 import os
 import tensorflow as tf
-from libs import (
-     IMG_WIDTH, IMG_HEIGHT, class_colors_stpls3d
-)
+from libs import class_colors_stpls3d
 import json
 
 
@@ -12,6 +10,8 @@ with open('config.json', "r") as f:
 
 BATCH_SIZE = int(config["BATCH_SIZE"])
 N_CHANNELS = int(config["N_CHANNELS"])
+IMG_HEIGHT = int(config["IMG_HEIGHT"])
+IMG_WIDTH = int(config["IMG_WIDTH"])
 
 CLASS_LABELS = tf.constant(
 list(class_colors_stpls3d.values())
@@ -56,10 +56,19 @@ def load_dataset(image_dir, mask_dir):
     """
     image_paths = sorted([os.path.join(image_dir, fname) for fname in os.listdir(image_dir)])
     mask_paths = sorted([os.path.join(mask_dir, fname) for fname in os.listdir(mask_dir)])
-    print(mask_paths)
     dataset = tf.data.Dataset.from_tensor_slices((image_paths, mask_paths))
     dataset = dataset.map(lambda img, mask: (parse_image(img), parse_mask(mask)),
                           num_parallel_calls=tf.data.AUTOTUNE)
     return dataset
+
+def load_images_for_prediction(image_dir):
+    """
+    Загрузка и предобработка изображений для предсказания.
+    """
+    image_paths = sorted([os.path.join(image_dir, fname) for fname in os.listdir(image_dir)])
+    dataset = tf.data.Dataset.from_tensor_slices(image_paths)
+    dataset = dataset.map(parse_image, num_parallel_calls=tf.data.AUTOTUNE)
+    return dataset
+
 
 
