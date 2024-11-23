@@ -118,9 +118,9 @@ def unet(class_count,   # количество классов
     model.compile(optimizer=Adam(learning_rate=1e-3),
                   #loss='binary_crossentropy',
                   loss='sparse_categorical_crossentropy',
-                  metrics=[
-                          OneHotIoU(num_classes=CLASS_COUNT,
-                                    target_class_ids=list(range(CLASS_COUNT))),
+                  metrics=['accuracy'
+                          #OneHotIoU(num_classes=CLASS_COUNT,
+                          #          target_class_ids=list(range(CLASS_COUNT))),
                           #Precision(class_id=0),
                           #  Precision(class_id=1),
                           #  Precision(class_id=2),

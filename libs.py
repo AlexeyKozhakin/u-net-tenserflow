@@ -7,6 +7,9 @@ import time
 import os
 import json
 
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+print(current_dir)
 # Чтение конфигурации из JSON
 with open("config.json", "r") as f:
     config = json.load(f)
@@ -106,6 +109,36 @@ def rgb_to_labels(image_list  # список цветных изображени
     return np.array(result)
 
 # Функция преобразования тензора меток класса в цветное сегметрированное изображение
+
+import tensorflow as tf
+
+def rgb_to_labels_tf(image_list):
+    """
+    Преобразует список цветных изображений в метки классов для TensorFlow.
+    """
+    result = []
+
+    for d in image_list:
+        # Преобразование в uint8, если входной тип float32
+        if d.dtype != tf.uint8:
+            d = tf.cast(d, tf.uint8)
+
+        sample = tf.convert_to_tensor(d, dtype=tf.uint8)
+
+        # Создание пустой 1-канальной картинки
+        y = tf.zeros((IMG_WIDTH, IMG_HEIGHT, 1), dtype=tf.uint8)
+
+        for i, cl in enumerate(CLASS_LABELS):
+            # Нахождение 3-х канальных пикселей классов и установка метки
+            mask = tf.reduce_all(sample == cl, axis=-1)
+            y = tf.where(mask[..., None], i, y)
+
+        result.append(y)
+
+    return tf.stack(result)
+
+
+
 
 def labels_to_rgb(image_list  # список одноканальных изображений
                  ):
