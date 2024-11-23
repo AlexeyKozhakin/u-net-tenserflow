@@ -130,6 +130,22 @@ def unet(class_count,   # количество классов
                   loss='sparse_categorical_crossentropy',
                   metrics=['accuracy',
                            class_accuracy(0),  # Точность для класса 0
+                           class_accuracy(1),
+                           class_accuracy(2),
+                           class_accuracy(3),
+                           class_accuracy(4),
+                           class_accuracy(5),
+                           class_accuracy(6),
+                           class_accuracy(7),
+                           class_accuracy(8),
+                           class_accuracy(9),
+                           class_accuracy(10),
+                           class_accuracy(11),
+                           class_accuracy(12),
+                           class_accuracy(13),
+                           class_accuracy(14),
+                           class_accuracy(15),
+                           class_accuracy(16)
                   ]
                   )
 
