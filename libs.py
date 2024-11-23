@@ -160,31 +160,39 @@ def labels_to_rgb(image_list  # список одноканальных изоб
     return np.array(result)
 
 # Функция визуализации процесса сегментации изображений и сохранения результатов
-def process_images_predict_save(model,        # обученная модель
-                                x_pred,
-                                filenames,    # список файлов, по которым загружены изображения
-                                save_dir='predictions'  # директория для сохранения изображений
-                               ):
+def process_images_predict_save(
+        model,  # обученная модель
+        x_pred,  # tf.data.Dataset с изображениями для предсказания
+        filenames,  # список файлов, по которым загружены изображения
+        save_dir='predictions'  # директория для сохранения изображений
+):
+    """
+    Процесс предсказания, визуализации и сохранения результатов.
+    """
+
+    import numpy as np
+    from PIL import Image
 
     # Создание директории, если её не существует
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
-    # Генерация случайного списка индексов в количестве count между (0, len(x_val)
-    indexes = np.arange(len(filenames))
+    # Генерация предсказаний с помощью модели
+    predictions = model.predict(x_pred)  # Предсказываем все данные из tf.data.Dataset
 
-    # Вычисление предсказания сети для картинок с отобранными индексами
-    predict = np.argmax(model.predict(x_pred[indexes]), axis=-1)
+    # Индексирование классов
+    predicted_classes = np.argmax(predictions, axis=-1)  # Конвертируем one-hot в индексы классов
 
-    # Подготовка цветов классов для отрисовки предсказания
-    orig = labels_to_rgb(predict[..., None])
+    # Преобразование предсказаний в RGB (используйте вашу функцию labels_to_rgb)
+    predicted_images = labels_to_rgb(predicted_classes[..., None])  # Конвертация в RGB
 
-
-    # Сохранение предсказанного изображения с использованием исходных имён файлов
+    # Сохранение предсказанных изображений с использованием имён файлов
     for i, filename in enumerate(filenames):
-        # Сохранение предсказанного изображения в формате PNG под тем же именем
-        pred_image = Image.fromarray(orig[i])
-        base_filename = os.path.basename(filename)  # Извлечение имени файла без пути
-        pred_image.save(os.path.join(save_dir, base_filename))  # Сохранение под тем же именем
+        # Преобразуем numpy-данные в изображение
+        pred_image = Image.fromarray(predicted_images[i].astype(np.uint8))
+
+        # Извлечение имени файла и сохранение результата
+        base_filename = os.path.basename(filename)  # Извлекаем имя файла
+        pred_image.save(os.path.join(save_dir, base_filename))  # Сохраняем изображение
 
     print(f"Предсказанные изображения сохранены в директории: {save_dir}")

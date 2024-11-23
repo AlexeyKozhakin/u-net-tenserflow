@@ -25,4 +25,10 @@ pred_dataset = load_images_for_prediction(
 model_unet = tf.keras.models.load_model(os.path.join(MODEL_DIR, MODEL_FILE))
 # Пример использования
 filenames = sorted(os.listdir(f'{PRED_DIRECTORY}/original'))  # Загружаем имена файлов
-process_images_predict_save(model_unet, pred_dataset, filenames, save_dir= os.path.join(PRED_DIRECTORY,'segment'))
+# Запуск предсказаний и сохранение результатов
+process_images_predict_save(
+    model=model_unet,
+    x_pred=pred_dataset,
+    filenames=filenames,
+    save_dir=os.path.join(PRED_DIRECTORY, 'segment')
+)
