@@ -18,6 +18,10 @@ with open("config.json", "r") as f:
 DATA_DIR = config["DATA_DIR"]
 MODEL_DIR = config["MODEL_DIR"]
 MODEL_FILE = config["MODEL_FILE"]
+TRAIN_FOLDER = config["TRAIN_FOLDER"]
+VAL_FOLDER = config["VAL_FOLDER"]
+TEST_FOLDER = config["TEST_FOLDER"]
+PRED_FOLDER = config["PRED_FOLDER"]
 
 
 # 20 - 1 (16) - 1 (17) - 1 (8) = 17 классов
@@ -50,10 +54,10 @@ IMG_WIDTH = 512               # Ширина картинки
 IMG_HEIGHT = 512              # Высота картинки
 N_CHANNELS = 3
 
-TRAIN_DIRECTORY = os.path.join(DATA_DIR,'train_augm')     # Название папки с файлами обучающей выборки
-VAL_DIRECTORY = os.path.join(DATA_DIR,'val')         # Название папки с файлами проверочной выборки
-TEST_DIRECTORY = os.path.join(DATA_DIR,'test')
-PRED_DIRECTORY = os.path.join(DATA_DIR,'predict')
+TRAIN_DIRECTORY = os.path.join(DATA_DIR, TRAIN_FOLDER)     # Название папки с файлами обучающей выборки
+VAL_DIRECTORY = os.path.join(DATA_DIR, VAL_FOLDER)         # Название папки с файлами проверочной выборки
+TEST_DIRECTORY = os.path.join(DATA_DIR, TEST_FOLDER)
+PRED_DIRECTORY = os.path.join(DATA_DIR, PRED_FOLDER)
 
 
 
