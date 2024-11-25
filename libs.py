@@ -50,7 +50,7 @@ IMG_WIDTH = 512               # Ширина картинки
 IMG_HEIGHT = 512              # Высота картинки
 N_CHANNELS = 3
 
-TRAIN_DIRECTORY = os.path.join(DATA_DIR,'train')     # Название папки с файлами обучающей выборки
+TRAIN_DIRECTORY = os.path.join(DATA_DIR,'train_augm')     # Название папки с файлами обучающей выборки
 VAL_DIRECTORY = os.path.join(DATA_DIR,'val')         # Название папки с файлами проверочной выборки
 TEST_DIRECTORY = os.path.join(DATA_DIR,'test')
 PRED_DIRECTORY = os.path.join(DATA_DIR,'predict')
