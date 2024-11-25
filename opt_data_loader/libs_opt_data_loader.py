@@ -30,24 +30,43 @@ def parse_image(image_path):
     return image
 
 
+# def parse_mask(mask_path):
+#     """
+#     Загрузка и предобработка масок.
+#     """
+#     mask = tf.io.read_file(mask_path)
+#     mask = tf.image.decode_png(mask, channels=3)  # Для цветных масок
+#     mask = tf.image.resize(mask, [IMG_HEIGHT, IMG_WIDTH])  # Масштабируем до требуемого размера
+#     mask = tf.cast(mask, tf.uint8)
+#
+#     # Создаем маску, сравнивая с CLASS_LABELS
+#     mask = tf.equal(mask[..., None, :], CLASS_LABELS)  # Создаем one-hot вектор
+#     mask = tf.reduce_any(mask, axis=-1)  # Приводим к бинарным значениям (по каждому классу)
+#
+#     # Преобразуем one-hot маску в индексы классов
+#     mask = tf.argmax(mask, axis=-1)  # Приводим к формату (height, width)
+#
+#     print(f"Mask shape after argmax: {mask.shape}")  # Должно быть (height, width)
+#     return mask
+
 def parse_mask(mask_path):
     """
-    Загрузка и предобработка масок.
+    Загрузка и предобработка цветных масок.
     """
     mask = tf.io.read_file(mask_path)
-    mask = tf.image.decode_png(mask, channels=3)  # Для цветных масок
+    mask = tf.image.decode_png(mask, channels=3)  # Загружаем маску как цветное изображение
     mask = tf.image.resize(mask, [IMG_HEIGHT, IMG_WIDTH])  # Масштабируем до требуемого размера
-    mask = tf.cast(mask, tf.uint8)
+    mask = tf.cast(mask, tf.uint8)  # Приводим к целочисленному типу
 
-    # Создаем маску, сравнивая с CLASS_LABELS
-    mask = tf.equal(mask[..., None, :], CLASS_LABELS)  # Создаем one-hot вектор
-    mask = tf.reduce_any(mask, axis=-1)  # Приводим к бинарным значениям (по каждому классу)
+    # Создаем one-hot encoding на основе сравнения с цветовыми метками
+    mask = tf.equal(mask[..., None, :], CLASS_LABELS)  # Сравниваем пиксель со списком классов
+    mask = tf.reduce_all(mask, axis=-1)  # Убираем цветовые каналы, оставляя бинарное представление
+    mask = tf.cast(mask, tf.float32)  # Переводим в float32, если нужно для обучения
 
-    # Преобразуем one-hot маску в индексы классов
-    mask = tf.argmax(mask, axis=-1)  # Приводим к формату (height, width)
-
-    print(f"Mask shape after argmax: {mask.shape}")  # Должно быть (height, width)
+    print(f"Mask shape after one-hot encoding: {mask.shape}")  # Должно быть (height, width, num_classes)
     return mask
+
+
 
 
 def load_dataset(image_dir, mask_dir):

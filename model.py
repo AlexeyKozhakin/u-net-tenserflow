@@ -15,12 +15,25 @@ import tensorflow as tf
 @tf.keras.utils.register_keras_serializable()
 def class_accuracy(class_id):
     def accuracy(y_true, y_pred):
-        y_true_class = tf.cast(tf.equal(y_true, class_id), tf.float32)  # Метки для конкретного класса
-        y_pred_class = tf.cast(tf.equal(tf.argmax(y_pred, axis=-1), class_id), tf.float32)  # Прогнозы для класса
-        correct_predictions = tf.reduce_sum(y_true_class * y_pred_class)  # Корректные предсказания
-        total_true = tf.reduce_sum(y_true_class)  # Общее количество истинных меток для класса
+        # Получаем one-hot колонку для интересующего класса
+        y_true_class = y_true[..., class_id]  # True метки для конкретного класса
+        y_pred_class = y_pred[..., class_id]  # Предсказания для конкретного класса
+
+        # Считаем количество правильных предсказаний
+        correct_predictions = tf.reduce_sum(tf.cast(y_true_class * tf.round(y_pred_class), tf.float32))
+        total_true = tf.reduce_sum(tf.cast(y_true_class, tf.float32))  # Общее количество истинных меток
+
         return correct_predictions / (total_true + tf.keras.backend.epsilon())  # Избегаем деления на 0
     return accuracy
+
+# def class_accuracy(class_id):
+#     def accuracy(y_true, y_pred):
+#         y_true_class = tf.cast(tf.equal(y_true, class_id), tf.float32)  # Метки для конкретного класса
+#         y_pred_class = tf.cast(tf.equal(tf.argmax(y_pred, axis=-1), class_id), tf.float32)  # Прогнозы для класса
+#         correct_predictions = tf.reduce_sum(y_true_class * y_pred_class)  # Корректные предсказания
+#         total_true = tf.reduce_sum(y_true_class)  # Общее количество истинных меток для класса
+#         return correct_predictions / (total_true + tf.keras.backend.epsilon())  # Избегаем деления на 0
+#     return accuracy
 
 
 def unet(class_count,   # количество классов
@@ -129,7 +142,7 @@ def unet(class_count,   # количество классов
     # Компилируем модель
     model.compile(optimizer=Adam(learning_rate=1e-3),
                   #loss='binary_crossentropy',
-                  loss='sparse_categorical_crossentropy',
+                  loss='categorical_crossentropy',
                   metrics=['accuracy',
                            class_accuracy(0),  # Ground
                            class_accuracy(1),  #Building
