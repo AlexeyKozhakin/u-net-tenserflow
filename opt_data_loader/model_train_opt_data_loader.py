@@ -45,8 +45,8 @@ model_unet = unet(CLASS_COUNT, (IMG_WIDTH, IMG_HEIGHT, N_CHANNELS))  # 4-кан�
 model_save_path = os.path.join("checkpoints", 'model_exp_optimized.{epoch:02d}.keras')
 
 # Настройка колбеков
-early_stopping = EarlyStopping(monitor='val_accuracy', patience=10, verbose=1, mode='min')
-mcp_save = ModelCheckpoint(model_save_path, save_best_only=True, monitor='val_accuracy', mode='min')
+early_stopping = EarlyStopping(monitor='val_accuracy', patience=10, verbose=1, mode='max')
+mcp_save = ModelCheckpoint(model_save_path, save_best_only=True, monitor='val_accuracy', mode='max')
 
 
 # class_weights = {1: 2.0, 2:4.0, 3:10.0, 4:4.0, 5:10.0, 6:10.0, 7:10.0, 8:10.0, 9:10.0, 10:10.0,
