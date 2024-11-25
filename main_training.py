@@ -78,13 +78,13 @@ model_save_path = os.path.join("./",
                                'model_exp_3_lr_0.0001.{epoch:02d}.keras')
 
 # Настройка колбеков
-early_stopping = EarlyStopping(monitor='val_loss', patience=25, verbose=1, mode='min')
+early_stopping = EarlyStopping(monitor='val_accuracy', patience=25, verbose=1, mode='max')
 mcp_save = ModelCheckpoint(model_save_path,
                            save_best_only=True,  # сохранять только лучшие модели
                           #  monitor='val_loss',
                           #  mode='min',
-                           monitor='val_loss',
-                           mode='min',
+                           monitor='val_accuracy',
+                           mode='max',
                            save_freq='epoch')  # сохранять каждую эпоху
 
 # Обучение модели
