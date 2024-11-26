@@ -22,7 +22,8 @@ with open('config.json', "r") as f:
 
 BATCH_SIZE = int(config["BATCH_SIZE"])
 N_CHANNELS = int(config["N_CHANNELS"])
-
+MODEL_DIR = config["MODEL_DIR"]
+PRE_TRIANED_MODEL_FILE = config["PRE_TRIANED_MODEL_FILE"]
 # Настройка данных
 
 train_dataset = load_dataset(
@@ -38,11 +39,21 @@ val_dataset = load_dataset(
 train_dataset = train_dataset.shuffle(100).batch(BATCH_SIZE).prefetch(buffer_size=tf.data.AUTOTUNE)
 val_dataset = val_dataset.batch(BATCH_SIZE).prefetch(buffer_size=tf.data.AUTOTUNE)
 
-# Создание модели
-model_unet = unet(CLASS_COUNT, (IMG_WIDTH, IMG_HEIGHT, N_CHANNELS))  # 4-канальное изображение
+if PRE_TRIANED_MODEL_FILE:
+    from tensorflow.keras.models import load_model
+    # Путь к сохранённой модели
+    model_load_path = os.path.join(MODEL_DIR, PRE_TRIANED_MODEL_FILE)  # Укажите путь к вашей модели
+
+    # Загрузка модели
+    model_unet = load_model(model_load_path)
+
+    print("Модель успешно загружена!")
+else:
+    # Создание модели
+    model_unet = unet(CLASS_COUNT, (IMG_WIDTH, IMG_HEIGHT, N_CHANNELS))  # 4-канальное изображение
 
 # Определение путей для сохранения модели
-model_save_path = os.path.join("checkpoints", 'model_exp_optimized.{epoch:02d}.keras')
+model_save_path = os.path.join(MODEL_DIR, 'model_exp_optimized.{epoch:02d}.keras')
 
 # Настройка колбеков
 early_stopping = EarlyStopping(monitor='val_accuracy', patience=10, verbose=1, mode='max')
