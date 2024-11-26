@@ -9,6 +9,7 @@ from model import unet
 import json
 import tensorflow as tf
 from model import class_accuracy
+from tensorflow.keras.optimizers import Adam
 
 # # Получаем абсолютный путь к текущему файлу (запускаемому скрипту)
 # current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -44,10 +45,23 @@ if PRE_TRIANED_MODEL_FILE:
     from tensorflow.keras.models import load_model
     # Путь к сохранённой модели
     model_load_path = os.path.join(MODEL_DIR, PRE_TRIANED_MODEL_FILE)  # Укажите путь к вашей модели
-
+    print(model_load_path)
     # Загрузка модели
-    model_unet = load_model(model_load_path)
-
+    model_unet = load_model(model_load_path, compile=False)
+    model_unet.compile(optimizer=Adam(learning_rate=1e-3),
+                  loss='categorical_crossentropy',
+                  metrics=['accuracy',
+                           class_accuracy(0),  # Ground
+                           class_accuracy(1),  #Building
+                           class_accuracy(2),  #LowVegetation
+                           class_accuracy(3),  #MediumVegetation
+                           class_accuracy(4),   #HighVegetation
+                           class_accuracy(5),   #Vehicle
+                           class_accuracy(14),  # Road
+                           class_accuracy(15),  # Dirt
+                           class_accuracy(16)   # Grass
+                  ]
+                  )
     print("Модель успешно загружена!")
 else:
     # Создание модели
