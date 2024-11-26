@@ -8,6 +8,7 @@ from opt_data_loader.libs_opt_data_loader import load_dataset, IMG_WIDTH, IMG_HE
 from model import unet
 import json
 import tensorflow as tf
+from model import class_accuracy
 
 # # Получаем абсолютный путь к текущему файлу (запускаемому скрипту)
 # current_dir = os.path.dirname(os.path.abspath(__file__))
