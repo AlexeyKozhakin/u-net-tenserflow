@@ -71,7 +71,7 @@ else:
 model_save_path = os.path.join(MODEL_DIR, 'model_exp_optimized.{epoch:02d}.keras')
 
 # Настройка колбеков
-early_stopping = EarlyStopping(monitor='val_accuracy', patience=10, verbose=1, mode='max')
+early_stopping = EarlyStopping(monitor='val_accuracy', patience=50, verbose=1, mode='max')
 mcp_save = ModelCheckpoint(model_save_path, save_best_only=True, monitor='val_accuracy', mode='max')
 
 
